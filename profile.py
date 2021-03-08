@@ -137,6 +137,17 @@ enb1.addService(rspec.Execute(shell="bash", command="/local/repository/bin/updat
 enb1.addService(rspec.Execute(shell="bash", command="/local/repository/bin/tune-cpu.sh"))
 enb1.addService(rspec.Execute(shell="bash", command="/local/repository/bin/add-nat-and-ip-forwarding.sh"))
 
+# Add a NUC eNB node
+enb2 = request.RawPC("enb2")
+enb2.component_id = params.enb_node
+enb2.hardware_type = GLOBALS.NUC_HWTYPE
+enb2.disk_image = GLOBALS.SRSLTE_IMG
+enb2.Desire("rf-controlled", 1)
+enb2_rue1_rf = enb2.addInterface("rue2_rf")
+enb2.addService(rspec.Execute(shell="bash", command="/local/repository/bin/update-config-files.sh"))
+enb2.addService(rspec.Execute(shell="bash", command="/local/repository/bin/tune-cpu.sh"))
+enb2.addService(rspec.Execute(shell="bash", command="/local/repository/bin/add-nat-and-ip-forwarding.sh"))
+
 # Add a UE node
 if params.ue_type == "nexus5":
     adbnode = request.RawPC("adbnode")
@@ -155,11 +166,14 @@ elif params.ue_type == "srsue":
 rue1.component_id = params.ue_node
 rue1.Desire("rf-controlled", 1)
 rue1_enb1_rf = rue1.addInterface("enb1_rf")
+rue1_enb2_rf = rue1.addInterface("enb2_rf")
 
 # Create the RF link between the UE and eNodeB
 rflink = request.RFLink("rflink")
 rflink.addInterface(enb1_rue1_rf)
 rflink.addInterface(rue1_enb1_rf)
+rflink.addInterface(rue1_enb2_rf)
+rflink.addInterface(enb2_rue1_rf)
 
 tour = IG.Tour()
 tour.Description(IG.Tour.MARKDOWN, tourDescription)
