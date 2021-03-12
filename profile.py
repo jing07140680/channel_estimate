@@ -114,7 +114,11 @@ pc.defineParameter("ue_type", "UE Type", portal.ParameterType.STRING, "nexus5",
                    [("srsue", "srsLTE UE (B210)"), ("nexus5", "COTS UE (Nexus 5)")],
                    longDescription="Type of UE to deploy.")
 
-pc.defineParameter("enb_node", "eNodeB Node ID",
+pc.defineParameter("enb_node1", "eNodeB Node ID",
+                   portal.ParameterType.STRING, "", advanced=True,
+                   longDescription="Specific eNodeB node to bind to.")
+
+pc.defineParameter("enb_node2", "eNodeB Node ID",
                    portal.ParameterType.STRING, "", advanced=True,
                    longDescription="Specific eNodeB node to bind to.")
 
